@@ -51,3 +51,7 @@ resource "oci_core_instance" "ubuntu_micro" {
     ssh_authorized_keys = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCqlxyLKs39qC/gdkYqPrDPQVhDQaGF7s20tOeGKrHaslfNpX7fC867jvtyMiMHUmvG2gD3uBKwdHS9tX6a6MClrmXcWGptzQfm1f9V00BM8CPRkTXe5a/LMABRJ2z4/Yb4R4JhPYFplmJXyCflAyHKALioO3TmZjrJ8GlqbLfhD6eBvZ8HirFKNPy8vMW5V4QW9pJf12wruHm4pZi7wqMkGQwkjTc46berrG4TSjH10uvocs0aREkghuduIjit2YmdXRaqUi6pFIpaBla+QrBR7uOCL0clilFlV3ZZMogBy9JTLQnLg40cMYfoVCwhwaicbM7G+JDRb+e9DMaGh3LRo8UvjDlIXCzukYV7M+idRhWDPH5MugN0yxa4UiBQmgVApDTotlSg1AkEzn169eO7s787G6sJDDTs66aw2aBgNXOsHyzYXjc/JObJeQBJV7OmF7PSeN+hv2XyyID4n5JwzOQhPCpijM0ZKnUMIsYA0myELXiD5Ceopv48KRpuobU= rmerces@HAL"
   }
 }
+
+output "public_ip" {
+  value = oci_core_instance.ubuntu_micro.public_ip
+}
