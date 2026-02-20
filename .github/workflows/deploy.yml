@@ -14,17 +14,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup OCI Private Key
+      - name: Validate OCI Private Key
         run: |
-          mkdir -p ~/.oci
-          printf '%s' "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/oci_api_key.pem
-          chmod 600 ~/.oci/oci_api_key.pem
           echo "--- Key diagnostics ---"
-          echo "Lines: $(wc -l < ~/.oci/oci_api_key.pem)"
-          echo "First line: $(head -1 ~/.oci/oci_api_key.pem)"
-          echo "Last line: $(tail -1 ~/.oci/oci_api_key.pem)"
-          echo "OpenSSL check: $(openssl rsa -check -noout -in ~/.oci/oci_api_key.pem 2>&1)"
-          echo "Fingerprint from key: $(openssl pkey -pubout -outform DER -in ~/.oci/oci_api_key.pem 2>/dev/null | openssl dgst -md5 -c | awk '{print $2}')"
+          printf '%s' "${{ secrets.OCI_PRIVATE_KEY }}" | openssl rsa -check -noout 2>&1
+          echo "Fingerprint from key: $(printf '%s' "${{ secrets.OCI_PRIVATE_KEY }}" | openssl pkey -pubout -outform DER 2>/dev/null | openssl dgst -md5 -c | awk '{print $2}')"
           echo "Fingerprint secret:   ${{ secrets.OCI_FINGERPRINT }}"
 
       - name: Setup Terraform
@@ -45,7 +39,7 @@ jobs:
           TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
           TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
           TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_private_key_path: /home/runner/.oci/oci_api_key.pem
+          TF_VAR_private_key: ${{ secrets.OCI_PRIVATE_KEY }}
           TF_VAR_region: ${{ secrets.OCI_REGION }}
           TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
           TF_VAR_subnet_ocid: ${{ secrets.OCI_SUBNET_OCID }}
@@ -57,7 +51,7 @@ jobs:
           TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
           TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
           TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_private_key_path: /home/runner/.oci/oci_api_key.pem
+          TF_VAR_private_key: ${{ secrets.OCI_PRIVATE_KEY }}
           TF_VAR_region: ${{ secrets.OCI_REGION }}
           TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
           TF_VAR_subnet_ocid: ${{ secrets.OCI_SUBNET_OCID }}
