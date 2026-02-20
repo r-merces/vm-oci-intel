@@ -39,7 +39,12 @@ jobs:
           terraform_version: "1.5.0"
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          terraform init \
+            -backend-config="region=${{ secrets.OCI_REGION }}" \
+            -backend-config="endpoint=https://${{ secrets.OCI_NAMESPACE }}.compat.objectstorage.${{ secrets.OCI_REGION }}.oraclecloud.com" \
+            -backend-config="access_key=${{ secrets.OCI_STATE_ACCESS_KEY }}" \
+            -backend-config="secret_key=${{ secrets.OCI_STATE_SECRET_KEY }}"
 
       - name: Terraform Format
         run: terraform fmt -check
