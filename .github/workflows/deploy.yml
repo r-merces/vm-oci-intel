@@ -33,26 +33,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Validate Secrets
-        run: |
-          check() {
-            local name=$1
-            local value=$2
-            if [ -z "$value" ]; then
-              echo "VAZIO: $name"
-            else
-              echo "OK:    $name"
-            fi
-          }
-          check OCI_TENANCY_OCID     "${{ secrets.OCI_TENANCY_OCID }}"
-          check OCI_USER_OCID        "${{ secrets.OCI_USER_OCID }}"
-          check OCI_FINGERPRINT      "${{ secrets.OCI_FINGERPRINT }}"
-          check OCI_PRIVATE_KEY      "${{ secrets.OCI_PRIVATE_KEY }}"
-          check OCI_REGION           "${{ secrets.OCI_REGION }}"
-          check OCI_COMPARTMENT_OCID "${{ secrets.OCI_COMPARTMENT_OCID }}"
-          check OCI_SUBNET_OCID      "${{ secrets.OCI_SUBNET_OCID }}"
-          check OCI_NSG_OCID         "${{ secrets.OCI_NSG_OCID }}"
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
