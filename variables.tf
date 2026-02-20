@@ -13,11 +13,6 @@ variable "fingerprint" {
   type        = string
 }
 
-variable "private_key" {
-  description = "The private key content"
-  type        = string
-}
-
 variable "region" {
   description = "The OCI region"
   type        = string
