@@ -14,12 +14,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Validate OCI Private Key
+      - name: Validate Secrets
         run: |
-          echo "--- Key diagnostics ---"
-          printf '%s' "${{ secrets.OCI_PRIVATE_KEY }}" | openssl rsa -check -noout 2>&1
-          echo "Fingerprint from key: $(printf '%s' "${{ secrets.OCI_PRIVATE_KEY }}" | openssl pkey -pubout -outform DER 2>/dev/null | openssl dgst -md5 -c | awk '{print $2}')"
-          echo "Fingerprint secret:   ${{ secrets.OCI_FINGERPRINT }}"
+          check() {
+            local name=$1
+            local value=$2
+            if [ -z "$value" ]; then
+              echo "VAZIO: $name"
+            else
+              echo "OK:    $name"
+            fi
+          }
+          check OCI_TENANCY_OCID    "${{ secrets.OCI_TENANCY_OCID }}"
+          check OCI_USER_OCID       "${{ secrets.OCI_USER_OCID }}"
+          check OCI_FINGERPRINT     "${{ secrets.OCI_FINGERPRINT }}"
+          check OCI_PRIVATE_KEY     "${{ secrets.OCI_PRIVATE_KEY }}"
+          check OCI_REGION          "${{ secrets.OCI_REGION }}"
+          check OCI_COMPARTMENT_OCID "${{ secrets.OCI_COMPARTMENT_OCID }}"
+          check OCI_SUBNET_OCID     "${{ secrets.OCI_SUBNET_OCID }}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
