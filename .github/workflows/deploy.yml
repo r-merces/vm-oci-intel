@@ -25,13 +25,14 @@ jobs:
               echo "OK:    $name"
             fi
           }
-          check OCI_TENANCY_OCID    "${{ secrets.OCI_TENANCY_OCID }}"
-          check OCI_USER_OCID       "${{ secrets.OCI_USER_OCID }}"
-          check OCI_FINGERPRINT     "${{ secrets.OCI_FINGERPRINT }}"
-          check OCI_PRIVATE_KEY     "${{ secrets.OCI_PRIVATE_KEY }}"
-          check OCI_REGION          "${{ secrets.OCI_REGION }}"
+          check OCI_TENANCY_OCID     "${{ secrets.OCI_TENANCY_OCID }}"
+          check OCI_USER_OCID        "${{ secrets.OCI_USER_OCID }}"
+          check OCI_FINGERPRINT      "${{ secrets.OCI_FINGERPRINT }}"
+          check OCI_PRIVATE_KEY      "${{ secrets.OCI_PRIVATE_KEY }}"
+          check OCI_REGION           "${{ secrets.OCI_REGION }}"
           check OCI_COMPARTMENT_OCID "${{ secrets.OCI_COMPARTMENT_OCID }}"
-          check OCI_SUBNET_OCID     "${{ secrets.OCI_SUBNET_OCID }}"
+          check OCI_SUBNET_OCID      "${{ secrets.OCI_SUBNET_OCID }}"
+          check OCI_NSG_OCID         "${{ secrets.OCI_NSG_OCID }}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -48,22 +49,24 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -no-color
         env:
-          TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
-          TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
-          TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_private_key: ${{ secrets.OCI_PRIVATE_KEY }}
-          TF_VAR_region: ${{ secrets.OCI_REGION }}
+          TF_VAR_tenancy_ocid:     ${{ secrets.OCI_TENANCY_OCID }}
+          TF_VAR_user_ocid:        ${{ secrets.OCI_USER_OCID }}
+          TF_VAR_fingerprint:      ${{ secrets.OCI_FINGERPRINT }}
+          TF_VAR_private_key:      ${{ secrets.OCI_PRIVATE_KEY }}
+          TF_VAR_region:           ${{ secrets.OCI_REGION }}
           TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
-          TF_VAR_subnet_ocid: ${{ secrets.OCI_SUBNET_OCID }}
+          TF_VAR_subnet_ocid:      ${{ secrets.OCI_SUBNET_OCID }}
+          TF_VAR_nsg_ocid:         ${{ secrets.OCI_NSG_OCID }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
         env:
-          TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
-          TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
-          TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_private_key: ${{ secrets.OCI_PRIVATE_KEY }}
-          TF_VAR_region: ${{ secrets.OCI_REGION }}
+          TF_VAR_tenancy_ocid:     ${{ secrets.OCI_TENANCY_OCID }}
+          TF_VAR_user_ocid:        ${{ secrets.OCI_USER_OCID }}
+          TF_VAR_fingerprint:      ${{ secrets.OCI_FINGERPRINT }}
+          TF_VAR_private_key:      ${{ secrets.OCI_PRIVATE_KEY }}
+          TF_VAR_region:           ${{ secrets.OCI_REGION }}
           TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
-          TF_VAR_subnet_ocid: ${{ secrets.OCI_SUBNET_OCID }}
+          TF_VAR_subnet_ocid:      ${{ secrets.OCI_SUBNET_OCID }}
+          TF_VAR_nsg_ocid:         ${{ secrets.OCI_NSG_OCID }}

@@ -28,11 +28,6 @@ data "oci_core_images" "ubuntu_24_04" {
   sort_order               = "DESC"
 }
 
-data "oci_core_network_security_groups" "svc_ssh" {
-  compartment_id = var.compartment_ocid
-  display_name   = "svc-ssh"
-}
-
 resource "oci_core_instance" "ubuntu_micro" {
   # Seleciona o primeiro AD disponível (em regiões com múltiplos ADs, pode-se ajustar)
   availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
@@ -43,7 +38,7 @@ resource "oci_core_instance" "ubuntu_micro" {
   create_vnic_details {
     subnet_id = var.subnet_ocid
     # Vincula o Network Security Group "svc-ssh" à placa de rede
-    nsg_ids = [data.oci_core_network_security_groups.svc_ssh.network_security_groups[0].id]
+    nsg_ids = [var.nsg_ocid]
   }
 
   source_details {

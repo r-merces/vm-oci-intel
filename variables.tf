@@ -33,3 +33,8 @@ variable "subnet_ocid" {
   description = "The OCID of the subnet"
   type        = string
 }
+
+variable "nsg_ocid" {
+  description = "The OCID of the svc-ssh Network Security Group"
+  type        = string
+}
