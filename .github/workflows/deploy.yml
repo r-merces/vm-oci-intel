@@ -5,11 +5,30 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Ação a executar"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
 
 jobs:
   terraform:
-    name: "Terraform Apply"
+    name: "Terraform ${{ github.event.inputs.action || 'apply' }}"
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_tenancy_ocid:     ${{ secrets.OCI_TENANCY_OCID }}
+      TF_VAR_user_ocid:        ${{ secrets.OCI_USER_OCID }}
+      TF_VAR_fingerprint:      ${{ secrets.OCI_FINGERPRINT }}
+      TF_VAR_private_key:      ${{ secrets.OCI_PRIVATE_KEY }}
+      TF_VAR_region:           ${{ secrets.OCI_REGION }}
+      TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
+      TF_VAR_subnet_ocid:      ${{ secrets.OCI_SUBNET_OCID }}
+      TF_VAR_nsg_ocid:         ${{ secrets.OCI_NSG_OCID }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -47,26 +66,13 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Plan
+        if: github.event.inputs.action != 'destroy'
         run: terraform plan -no-color
-        env:
-          TF_VAR_tenancy_ocid:     ${{ secrets.OCI_TENANCY_OCID }}
-          TF_VAR_user_ocid:        ${{ secrets.OCI_USER_OCID }}
-          TF_VAR_fingerprint:      ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_private_key:      ${{ secrets.OCI_PRIVATE_KEY }}
-          TF_VAR_region:           ${{ secrets.OCI_REGION }}
-          TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
-          TF_VAR_subnet_ocid:      ${{ secrets.OCI_SUBNET_OCID }}
-          TF_VAR_nsg_ocid:         ${{ secrets.OCI_NSG_OCID }}
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.event.inputs.action != 'destroy'
         run: terraform apply -auto-approve -input=false
-        env:
-          TF_VAR_tenancy_ocid:     ${{ secrets.OCI_TENANCY_OCID }}
-          TF_VAR_user_ocid:        ${{ secrets.OCI_USER_OCID }}
-          TF_VAR_fingerprint:      ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_private_key:      ${{ secrets.OCI_PRIVATE_KEY }}
-          TF_VAR_region:           ${{ secrets.OCI_REGION }}
-          TF_VAR_compartment_ocid: ${{ secrets.OCI_COMPARTMENT_OCID }}
-          TF_VAR_subnet_ocid:      ${{ secrets.OCI_SUBNET_OCID }}
-          TF_VAR_nsg_ocid:         ${{ secrets.OCI_NSG_OCID }}
+
+      - name: Terraform Destroy
+        if: github.event.inputs.action == 'destroy'
+        run: terraform destroy -auto-approve -input=false
