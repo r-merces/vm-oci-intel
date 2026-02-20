@@ -5,19 +5,10 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      action:
-        description: "Ação a executar"
-        required: true
-        default: "apply"
-        type: choice
-        options:
-          - apply
-          - destroy
 
 jobs:
   terraform:
-    name: "Terraform ${{ github.event.inputs.action || 'apply' }}"
+    name: "Terraform Apply"
     runs-on: ubuntu-latest
     env:
       TF_VAR_tenancy_ocid:     ${{ secrets.OCI_TENANCY_OCID }}
@@ -51,13 +42,7 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Plan
-        if: github.event.inputs.action != 'destroy'
         run: terraform plan -no-color
 
       - name: Terraform Apply
-        if: github.event.inputs.action != 'destroy'
         run: terraform apply -auto-approve -input=false
-
-      - name: Terraform Destroy
-        if: github.event.inputs.action == 'destroy'
-        run: terraform destroy -auto-approve -input=false
