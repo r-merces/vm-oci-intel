@@ -59,4 +59,4 @@ jobs:
           curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data "{\"type\":\"A\",\"name\":\"svc2.rmerces.com\",\"content\":\"${{ steps.get_ip.outputs.ip }}\",\"ttl\":1,\"proxied\":false}"
+            --data "{\"type\":\"A\",\"name\":\"svc2.rmerces.com\",\"content\":\"${{ steps.get_ip.outputs.ip }}\",\"ttl\":300,\"proxied\":false}"
