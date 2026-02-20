@@ -43,7 +43,7 @@ resource "oci_core_instance" "ubuntu_micro" {
   create_vnic_details {
     subnet_id = var.subnet_ocid
     # Vincula o Network Security Group "svc-ssh" à placa de rede
-    nsg_ids   = [data.oci_core_network_security_groups.svc_ssh.network_security_groups[0].id]
+    nsg_ids = [data.oci_core_network_security_groups.svc_ssh.network_security_groups[0].id]
   }
 
   source_details {
