@@ -17,8 +17,12 @@ jobs:
       - name: Setup OCI Private Key
         run: |
           mkdir -p ~/.oci
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/oci_api_key.pem
+          printf '%s' "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/oci_api_key.pem
           chmod 600 ~/.oci/oci_api_key.pem
+          echo "--- Key diagnostics ---"
+          echo "Lines: $(wc -l < ~/.oci/oci_api_key.pem)"
+          echo "First line: $(head -1 ~/.oci/oci_api_key.pem)"
+          echo "Last line: $(tail -1 ~/.oci/oci_api_key.pem)"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
