@@ -23,6 +23,9 @@ jobs:
           echo "Lines: $(wc -l < ~/.oci/oci_api_key.pem)"
           echo "First line: $(head -1 ~/.oci/oci_api_key.pem)"
           echo "Last line: $(tail -1 ~/.oci/oci_api_key.pem)"
+          echo "OpenSSL check: $(openssl rsa -check -noout -in ~/.oci/oci_api_key.pem 2>&1)"
+          echo "Fingerprint from key: $(openssl pkey -pubout -outform DER -in ~/.oci/oci_api_key.pem 2>/dev/null | openssl dgst -md5 -c | awk '{print $2}')"
+          echo "Fingerprint secret:   ${{ secrets.OCI_FINGERPRINT }}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
